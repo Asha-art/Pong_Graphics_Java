@@ -54,8 +54,10 @@ public class Pong extends Canvas {
 
         // draw score
         g2.setColor(Color.blue);
-        g2.drawString("" + paddle1Score, 15, 20);
-        g2.drawString("" + paddle2Score, 800, 20);
+        Font font = new Font("Verdana", Font.BOLD, 15);
+        g.setFont(font);
+        g2.drawString("Score for player1: " + paddle1Score, 15, 30);
+        g2.drawString("Score for player2: " + paddle2Score, 800, 30);
     }
 
     public void processKeyEvent(KeyEvent e) {
@@ -72,12 +74,27 @@ public class Pong extends Canvas {
             if (e.getKeyCode() == KeyEvent.VK_K) {
                 paddle2.y += 10;
             }
+
         }
     }
 
     public void doStuff() {
         ball.x += delta.x;
         ball.y += delta.y;
+
+        // make the paddle not to go outside of the screen
+        if (paddle1.y < 0) {
+            paddle1.y = 0;
+        }
+        if (paddle2.y < 0) {
+            paddle2.y = 0;
+        }
+        if (paddle1.y > 500) {
+            paddle1.y = 500;
+        }
+        if (paddle2.y > 500) {
+            paddle2.y = 500;
+        }
 
         // and bounce if we hit a wall
         if (ball.y < 0 || ball.y + 20 > 700)
@@ -92,20 +109,20 @@ public class Pong extends Canvas {
         if (ball.intersects(paddle2))
             delta.x = -delta.x;
 
-        // check for scoring
+        // check for scoring paddle1
         if (ball.x > 1000) {
             ball.x = 500;
             ball.y = 350;
             delta = new Point(-5, 5);
+            paddle1Score++;
         }
 
-        // score paddle1
-        if (ball.x <= 0) {
-            paddle2Score++;
-        }
         // score paddle2
-        if (ball.x >= 990) {
-            paddle1Score++;
+        if (ball.x <= 0) {
+            ball.x = 500;
+            ball.y = 350;
+            delta = new Point(5, -5);
+            paddle2Score++;
         }
 
     }
