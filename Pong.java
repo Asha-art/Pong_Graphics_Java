@@ -9,6 +9,9 @@ public class Pong extends Canvas {
     Point delta;
     Ellipse2D.Double ball;
     Rectangle paddle1;
+    Rectangle paddle2;
+    private int paddle1Score = 0;
+    private int paddle2Score = 0;
 
     public static void main(String[] args) {
         JFrame win = new JFrame("Pong");
@@ -25,6 +28,7 @@ public class Pong extends Canvas {
         ball = new Ellipse2D.Double(500, 350, 20, 20);
         delta = new Point(-5, 5);
         paddle1 = new Rectangle(50, 250, 20, 200);
+        paddle2 = new Rectangle(950, 250, 20, 200); // x-axis, y-axis, width, height
 
         Timer t = new Timer(true);
         t.schedule(new java.util.TimerTask() {
@@ -44,6 +48,14 @@ public class Pong extends Canvas {
 
         g2.setColor(Color.blue);
         g2.fill(paddle1);
+
+        g2.setColor(Color.orange);
+        g2.fill(paddle2);
+
+        // draw score
+        g2.setColor(Color.blue);
+        g2.drawString("" + paddle1Score, 15, 20);
+        g2.drawString("" + paddle2Score, 800, 20);
     }
 
     public void processKeyEvent(KeyEvent e) {
@@ -53,6 +65,12 @@ public class Pong extends Canvas {
             }
             if (e.getKeyCode() == KeyEvent.VK_S) {
                 paddle1.y += 10;
+            }
+            if (e.getKeyCode() == KeyEvent.VK_O) {
+                paddle2.y -= 10;
+            }
+            if (e.getKeyCode() == KeyEvent.VK_K) {
+                paddle2.y += 10;
             }
         }
     }
@@ -71,11 +89,23 @@ public class Pong extends Canvas {
         if (ball.intersects(paddle1))
             delta.x = -delta.x;
 
+        if (ball.intersects(paddle2))
+            delta.x = -delta.x;
+
         // check for scoring
         if (ball.x > 1000) {
             ball.x = 500;
             ball.y = 350;
             delta = new Point(-5, 5);
+        }
+
+        // score paddle1
+        if (ball.x <= 0) {
+            paddle2Score++;
+        }
+        // score paddle2
+        if (ball.x >= 990) {
+            paddle1Score++;
         }
 
     }
